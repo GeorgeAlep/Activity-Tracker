@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.help.Database.DatabaseHelper;
 import com.example.help.Model.ActivityData;
 import com.example.help.R;
@@ -38,7 +37,7 @@ public class HistoryActivity extends AppCompatActivity {
             historyArray[i] = "Date: " + data.getDate() +
                     "\nWalked: " + data.getDistanceWalked() + " km" +
                     "\nRan: " + data.getDistanceRun() + " km" +
-                    "\nIdle Time: " + data.getIdleTime() + " min";
+                    "\nDriven: " + data.getDistanceDriven() + " km";  // Display Distance Driven instead of Idle Time
         }
 
         // Display the data in the list view

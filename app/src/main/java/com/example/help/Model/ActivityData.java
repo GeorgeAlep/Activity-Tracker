@@ -3,17 +3,17 @@ package com.example.help.Model;
 public class ActivityData {
 
     private long id;
-    private String date; // Store the date for each activity record
+    private String date;
     private float distanceWalked;
     private float distanceRun;
-    private long idleTime; // in minutes
+    private float distanceDriven;  // New field for distance driven
 
-    public ActivityData(long id, String date, float distanceWalked, float distanceRun, long idleTime) {
+    public ActivityData(long id, String date, float distanceWalked, float distanceRun, float distanceDriven) {
         this.id = id;
         this.date = date;
         this.distanceWalked = distanceWalked;
         this.distanceRun = distanceRun;
-        this.idleTime = idleTime;
+        this.distanceDriven = distanceDriven;
     }
 
     public long getId() {
@@ -32,7 +32,7 @@ public class ActivityData {
         return distanceRun;
     }
 
-    public long getIdleTime() {
-        return idleTime;
+    public float getDistanceDriven() {
+        return distanceDriven;
     }
 }

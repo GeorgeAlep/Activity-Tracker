@@ -12,10 +12,12 @@ public class ActivityClassifier {
 
         if (speed < 2) {
             return "Idle";
-        } else if (speed > 2 && speed <= 5) {
+        } else if (speed >= 2 && speed <= 5) {
             return "Walking";
-        } else {
+        } else if (speed > 5 && speed <= 30) {
             return "Running";
+        } else {
+            return "Driving";  // Speed above 15 km/h is classified as Driving
         }
     }
 }
