@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.MainActivity">
+
+    <!-- Container for the MapView and TextViews -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- MapView for OpenStreetMap -->
+        <org.osmdroid.views.MapView
+            android:id="@+id/osmMapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- TextViews to show activity status and statistics -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="top|start"
+            android:padding="16dp"
+            android:background="#AAFFFFFF"> <!-- Semi-transparent background -->
+
+            <TextView
+                android:id="@+id/activityTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Current Activity: Idle"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/distanceWalkedTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Distance Walked: 0 km"
+                android:textSize="18sp"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/distanceRunTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Distance Run: 0 km"
+                android:textSize="18sp"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/idleTimeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Idle Time: 0 minutes"
+                android:textSize="18sp"
+                android:layout_marginTop="8dp" />
+
+            <!-- Button to navigate to the history activity -->
+            <Button
+                android:id="@+id/historyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View History"
+                android:layout_marginTop="16dp" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
