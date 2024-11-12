@@ -10,11 +10,11 @@ public class ActivityClassifier {
     public String classifyActivity(float speed) {
         Log.d(TAG, "Speed (km/h): " + speed);
 
-        if (speed < 2) {
+        if (speed < 0) {
             return "Idle";
-        } else if (speed >= 2 && speed <= 5) {
+        } else if (speed >= 0 && speed <= 7) {
             return "Walking";
-        } else if (speed > 5 && speed <= 30) {
+        } else if (speed > 7 && speed <= 30) {
             return "Running";
         } else {
             return "Driving";  // Speed above 15 km/h is classified as Driving

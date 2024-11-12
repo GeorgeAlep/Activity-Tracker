@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,66 +5,174 @@
     android:layout_height="match_parent"
     tools:context=".View.MainActivity">
 
-    <!-- Container for the MapView and TextViews -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/top_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_background"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.10"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <!-- MapView for OpenStreetMap -->
+        <TextView
+            android:id="@+id/toolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Your Activity"
+            android:textColor="@color/white"
+            android:textSize="37sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/historyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="25dp"
+            android:contentDescription="History"
+            android:src="@drawable/ic_history"
+            app:backgroundTint="@color/lightdark_red"
+            app:maxImageSize="35dp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/settingsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="25dp"
+            android:contentDescription="Settings"
+            android:src="@drawable/ic_settings"
+            app:backgroundTint="@color/dark_red"
+            app:maxImageSize="35dp" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/bottom_box"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_toolbar">
+
         <org.osmdroid.views.MapView
             android:id="@+id/osmMapView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+    </FrameLayout>
 
-        <!-- TextViews to show activity status and statistics -->
-        <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/gradient_background_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.40"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/gifBackground"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/loading_circle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.845"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.128" />
+
+        <ImageView
+            android:id="@+id/activityIcon"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:contentDescription="Activity Icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.845"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.132" />
+
+        <TextView
+            android:id="@+id/activityTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="top|start"
-            android:padding="16dp"
-            android:background="#AAFFFFFF"> <!-- Semi-transparent background -->
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/proxima_nova"
+            android:letterSpacing="0.07"
+            android:text="Idle"
+            android:textColor="@color/white"
+            android:textSize="35sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.159"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/activityTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Current Activity: Idle"
-                android:textSize="18sp" />
+        <TextView
+            android:id="@+id/distanceTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/proxima_nova"
+            android:text="12.4"
+            android:textColor="@color/white"
+            android:textSize="75sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/activityTextView"
+            app:layout_constraintStart_toStartOf="@id/activityTextView"
+            app:layout_constraintTop_toBottomOf="@id/activityTextView" />
 
-            <TextView
-                android:id="@+id/distanceWalkedTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Distance Walked: 0 km"
-                android:textSize="18sp"
-                android:layout_marginTop="8dp" />
+        <TextView
+            android:id="@+id/unitTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/proxima_nova"
+            android:text="km"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="@id/distanceTextView"
+            app:layout_constraintStart_toStartOf="@id/distanceTextView"
+            app:layout_constraintTop_toBottomOf="@id/distanceTextView" />
 
-            <TextView
-                android:id="@+id/distanceRunTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Distance Run: 0 km"
-                android:textSize="18sp"
-                android:layout_marginTop="8dp" />
+        <!-- New TextView for displaying the cardinal direction -->
 
-            <TextView
-                android:id="@+id/idleTimeTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Idle Time: 0 minutes"
-                android:textSize="18sp"
-                android:layout_marginTop="8dp" />
+        <TextView
+            android:id="@+id/cardinalDirection"
+            android:layout_width="144dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="68dp"
+            android:fontFamily="@font/proxima_nova"
+            android:text="N"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="70sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.842"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/unitTextView" />
 
-            <!-- Button to navigate to the history activity -->
-            <Button
-                android:id="@+id/historyButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="View History"
-                android:layout_marginTop="16dp" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/caloriesTextView"
+            android:layout_width="133dp"
+            android:layout_height="51dp"
+            android:layout_marginTop="88dp"
+            android:layout_marginEnd="72dp"
+            android:fontFamily="@font/proxima_nova"
+            android:text="0 kcal"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toStartOf="@id/cardinalDirection"
+            app:layout_constraintTop_toBottomOf="@id/unitTextView" />
 
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

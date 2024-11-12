@@ -6,15 +6,19 @@ public class ActivityData {
     private String date;
     private float distanceWalked;
     private float distanceRun;
-    private float distanceDriven;  // New field for distance driven
+    private float distanceDriven;
+    private double caloriesBurned;  // Single variable for total calories burned
 
-    public ActivityData(long id, String date, float distanceWalked, float distanceRun, float distanceDriven) {
+    public ActivityData(long id, String date, float distanceWalked, float distanceRun, float distanceDriven, double caloriesBurned) {
         this.id = id;
         this.date = date;
         this.distanceWalked = distanceWalked;
         this.distanceRun = distanceRun;
         this.distanceDriven = distanceDriven;
+        this.caloriesBurned = caloriesBurned;  // Set total calories burned
     }
+
+    // Getters and setters for each field
 
     public long getId() {
         return id;
@@ -34,5 +38,13 @@ public class ActivityData {
 
     public float getDistanceDriven() {
         return distanceDriven;
+    }
+
+    public double getCaloriesBurned() {
+        return caloriesBurned;
+    }
+
+    public void setCaloriesBurned(double caloriesBurned) {
+        this.caloriesBurned = caloriesBurned;
     }
 }

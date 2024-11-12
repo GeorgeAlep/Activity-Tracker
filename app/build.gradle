@@ -37,7 +37,8 @@ android {
 }
 
 dependencies {
-
+    implementation libs.glide
+    annotationProcessor libs.compiler
     implementation libs.osmdroid.android
     implementation libs.androidx.appcompat.v161
     implementation libs.material
