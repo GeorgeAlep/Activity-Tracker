@@ -30,6 +30,7 @@ import com.example.help.Controller.LocationController;
 import com.example.help.Database.DatabaseHelper;
 import com.example.help.R;
 import com.example.help.Service.LocationService;
+import com.example.help.utils.Constants;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -43,7 +44,6 @@ import org.osmdroid.views.overlay.Marker;
 
 public class MainActivity extends AppCompatActivity implements LocationController.LocationControllerListener, SensorEventListener {
 
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationController locationController;
     private MapView mapView;
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
     private TextView activityTextView;
     private TextView distanceTextView;
     private TextView unitTextView;
-    private TextView cardinalDirection;  // New TextView for cardinal direction
+    private TextView cardinalDirection;
     private TextView caloriesTextView;
     private ImageView activityIcon;
 
@@ -66,8 +66,6 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
         setContentView(R.layout.activity_main);
 
         ImageView gifBackground = findViewById(R.id.gifBackground);
-
-        // Load the GIF using Glide
         Glide.with(this).asGif().load(R.drawable.loading_circle).into(gifBackground);
 
         // Setup Toolbar
@@ -86,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
         mapView = findViewById(R.id.osmMapView);
         mapView.setMultiTouchControls(true);
         mapController = mapView.getController();
-        mapController.setZoom(15.0);
+        mapController.setZoom(Constants.DEFAULT_ZOOM_LEVEL);
 
         // Initialize the database helper
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
@@ -113,12 +111,11 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
 
         // Initialize location controller as singleton
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        locationController = LocationController.getInstance(this, databaseHelper, sensorManager, 70.0 // Replace with actual weight if needed
-        );
+        locationController = LocationController.getInstance(this, databaseHelper, sensorManager, Constants.DEFAULT_WEIGHT);
 
         // Request location permission if not granted
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Constants.LOCATION_PERMISSION_REQUEST_CODE);
         } else {
             startLocationUpdates();
         }
@@ -135,27 +132,7 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
         });
 
         // Setup cardinal direction click animation
-        cardinalDirection.setOnClickListener(v -> {
-            ObjectAnimator rotate360 = ObjectAnimator.ofFloat(cardinalDirection, "rotation", 0f, 360f);
-            rotate360.setDuration(300);
-            rotate360.setInterpolator(new LinearInterpolator());
-
-            ObjectAnimator rotate10 = ObjectAnimator.ofFloat(cardinalDirection, "rotation", 360f, 365f);
-            rotate10.setDuration(40);
-            rotate10.setInterpolator(new LinearInterpolator());
-
-            ObjectAnimator rotate5 = ObjectAnimator.ofFloat(cardinalDirection, "rotation", 370f, 367f);
-            rotate5.setDuration(20);
-            rotate5.setInterpolator(new LinearInterpolator());
-
-            ObjectAnimator rotateBack15 = ObjectAnimator.ofFloat(cardinalDirection, "rotation", 367f, 360f);
-            rotateBack15.setDuration(200);
-            rotateBack15.setInterpolator(new LinearInterpolator());
-
-            AnimatorSet animatorSet = new AnimatorSet();
-            animatorSet.playSequentially(rotate360, rotate10, rotate5, rotateBack15);
-            animatorSet.start();
-        });
+        setupCardinalDirectionAnimation();
 
         // Setup Floating Action Button for settings
         FloatingActionButton settingsButton = findViewById(R.id.settingsButton);
@@ -169,8 +146,6 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
         if (drawable instanceof BitmapDrawable) {
             return ((BitmapDrawable) drawable).getBitmap();
         }
-
-        // Create a bitmap from the drawable if it is not already a BitmapDrawable
         int width = drawable.getIntrinsicWidth();
         int height = drawable.getIntrinsicHeight();
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
@@ -180,35 +155,43 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
         return bitmap;
     }
 
+    private void setupCardinalDirectionAnimation() {
+        cardinalDirection.setOnClickListener(v -> {
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playSequentially(
+                    ObjectAnimator.ofFloat(cardinalDirection, "rotation", 0f, 360f).setDuration(300),
+                    ObjectAnimator.ofFloat(cardinalDirection, "rotation", 360f, 365f).setDuration(40),
+                    ObjectAnimator.ofFloat(cardinalDirection, "rotation", 370f, 367f).setDuration(20),
+                    ObjectAnimator.ofFloat(cardinalDirection, "rotation", 367f, 360f).setDuration(200)
+            );
+            animatorSet.setInterpolator(new LinearInterpolator());
+            animatorSet.start();
+        });
+    }
 
     private void startLocationUpdates() {
         LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setInterval(10000);
+        locationRequest.setInterval(Constants.LOCATION_UPDATE_INTERVAL);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // Permission is granted, proceed with location updates
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationController, getMainLooper());
         } else {
-            // Request permission
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Constants.LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
 
     @Override
     public void onActivityDataUpdated(String activity, float distanceWalked, float distanceRun, float distanceDriven, double caloriesBurned) {
         runOnUiThread(() -> {
-            // Update the UI with real-time data from LocationController
             DisplayController displayController = new DisplayController(this);
-
             boolean useKm = displayController.isUseKm();
             String unit = useKm ? "km" : "miles";
             unitTextView.setText(unit);
 
-            double displayedDistanceWalked = useKm ? distanceWalked : distanceWalked * 0.621371;
-            double displayedDistanceRun = useKm ? distanceRun : distanceRun * 0.621371;
-            double displayedDistanceDriven = useKm ? distanceDriven : distanceDriven * 0.621371;
+            double displayedDistanceWalked = useKm ? distanceWalked : distanceWalked * Constants.KM_TO_MILES;
+            double displayedDistanceRun = useKm ? distanceRun : distanceRun * Constants.KM_TO_MILES;
+            double displayedDistanceDriven = useKm ? distanceDriven : distanceDriven * Constants.KM_TO_MILES;
 
-            // Update activity and distance views based on current activity
             activityTextView.setText(activity);
             int iconResId;
             switch (activity) {
@@ -227,12 +210,11 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
                 default:
                     iconResId = R.drawable.ic_stand;
                     distanceTextView.setText("");
+                    unitTextView.setText("");
                     break;
             }
 
             activityIcon.setImageResource(iconResId);
-
-            // Update calories burned
             caloriesTextView.setText(String.format("%.0f kcal", caloriesBurned));
             caloriesTextView.setVisibility(View.VISIBLE);
         });
@@ -250,7 +232,6 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
         });
     }
 
-    @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
             float[] rotationMatrix = new float[9];
@@ -262,41 +243,22 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
             float[] orientation = new float[3];
             SensorManager.getOrientation(adjustedRotationMatrix, orientation);
 
-            float azimuthInRadians = orientation[0];
-            float azimuthInDegrees = (float) Math.toDegrees(azimuthInRadians);
+            float azimuthInDegrees = (float) Math.toDegrees(orientation[0]);
             currentAzimuth = (360 - azimuthInDegrees) % 360;
 
-            // Update marker rotation
-            if (locationMarker != null) {
-                locationMarker.setRotation(currentAzimuth);
-                mapView.invalidate();
-            }
-
-            // Update the cardinal direction TextView
-            onDirectionChanged(getCardinalDirection(currentAzimuth));
+            String direction = Constants.getCardinalDirection(currentAzimuth);
+            onDirectionChanged(direction);  // Update direction display
         }
     }
 
-    private String getCardinalDirection(float azimuth) {
-        if (azimuth >= 352.5 || azimuth < 37.5) return "N";
-        else if (azimuth >= 37.5 && azimuth < 82.5) return "NE";
-        else if (azimuth >= 82.5 && azimuth < 127.5) return "E";
-        else if (azimuth >= 127.5 && azimuth < 172.5) return "SE";
-        else if (azimuth >= 172.5 && azimuth < 217.5) return "S";
-        else if (azimuth >= 217.5 && azimuth < 262.5) return "SW";
-        else if (azimuth >= 262.5 && azimuth < 307.5) return "W";
-        else return "NW";
-    }
 
-    // Implement the missing method from LocationControllerListener
     @Override
     public void onDirectionChanged(String direction) {
-        runOnUiThread(() -> cardinalDirection.setText(direction));  // Update the TextView for cardinal direction
+        runOnUiThread(() -> cardinalDirection.setText(direction));
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    }
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
     @Override
     protected void onPause() {

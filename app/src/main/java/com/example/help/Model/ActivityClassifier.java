@@ -1,6 +1,7 @@
 package com.example.help.Model;
 
 import android.util.Log;
+import com.example.help.utils.Constants;
 
 public class ActivityClassifier {
 
@@ -10,14 +11,14 @@ public class ActivityClassifier {
     public String classifyActivity(float speed) {
         Log.d(TAG, "Speed (km/h): " + speed);
 
-        if (speed < 0) {
+        if (speed < Constants.SPEED_IDLE_THRESHOLD) {
             return "Idle";
-        } else if (speed >= 0 && speed <= 7) {
+        } else if (speed >= Constants.SPEED_IDLE_THRESHOLD && speed <= Constants.SPEED_WALKING_THRESHOLD) {
             return "Walking";
-        } else if (speed > 7 && speed <= 30) {
+        } else if (speed > Constants.SPEED_WALKING_THRESHOLD && speed <= Constants.SPEED_RUNNING_THRESHOLD) {
             return "Running";
         } else {
-            return "Driving";  // Speed above 15 km/h is classified as Driving
+            return "Driving";
         }
     }
 }

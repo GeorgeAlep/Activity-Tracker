@@ -16,6 +16,7 @@ playServicesLocation = "21.3.0"
 appcompat = "1.7.0"
 constraintlayout = "2.1.4"
 playServicesMaps = "19.0.0"
+junitJupiter = "5.8.1"
 
 [libraries]
 androidx-appcompat-v161 = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
@@ -41,6 +42,7 @@ play-services-location = { group = "com.google.android.gms", name = "play-servic
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

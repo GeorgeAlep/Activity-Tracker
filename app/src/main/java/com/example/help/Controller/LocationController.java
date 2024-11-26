@@ -9,8 +9,9 @@ import android.util.Log;
 
 import com.example.help.Database.DatabaseHelper;
 import com.example.help.Model.ActivityClassifier;
-import com.example.help.Model.CalorieCalculator;
 import com.example.help.Model.ActivityData;
+import com.example.help.Model.CalorieCalculator;
+import com.example.help.utils.Constants;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
 
@@ -18,14 +19,13 @@ import org.osmdroid.util.GeoPoint;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 public class LocationController extends LocationCallback implements SensorEventListener {
 
-    private static final String TAG = "LocationController";
-    private static LocationController instance; // Singleton instance
+    private static final String TAG = Constants.LOCATION_CONTROLLER_TAG;  // Using a constant for logging
+    private static LocationController instance;
 
-    private ActivityClassifier activityClassifier;
+    private final ActivityClassifier activityClassifier;
     private LocationControllerListener listener;
     private Location lastLocation;
     private float distanceWalked = 0f;
@@ -39,7 +39,6 @@ public class LocationController extends LocationCallback implements SensorEventL
     private SensorManager sensorManager;
     private Sensor rotationSensor;
 
-    // Private constructor to prevent direct instantiation
     private LocationController(LocationControllerListener listener, DatabaseHelper databaseHelper, SensorManager sensorManager, double weightKg) {
         this.listener = listener;
         this.databaseHelper = databaseHelper;
@@ -56,12 +55,11 @@ public class LocationController extends LocationCallback implements SensorEventL
         }
     }
 
-    // Singleton instance getter method
     public static synchronized LocationController getInstance(LocationControllerListener listener, DatabaseHelper databaseHelper, SensorManager sensorManager, double weightKg) {
         if (instance == null) {
             instance = new LocationController(listener, databaseHelper, sensorManager, weightKg);
         } else if (listener != null) {
-            instance.listener = listener; // Update listener if provided
+            instance.listener = listener;  // Update listener if provided
         }
         return instance;
     }
@@ -82,26 +80,30 @@ public class LocationController extends LocationCallback implements SensorEventL
 
         for (Location location : locationResult.getLocations()) {
             float speed = location.getSpeed();
-            String activity = activityClassifier.classifyActivity(speed * 3.6f); // Convert speed to km/h
+            String activity = activityClassifier.classifyActivity(speed * Constants.MS_TO_KMH_CONVERSION);  // Convert speed to km/h
             Log.d(TAG, "Received location update. Speed: " + speed + " m/s, Activity: " + activity);
 
             if (lastLocation != null) {
                 float distanceInMeters = location.distanceTo(lastLocation);
-                float distanceInKm = distanceInMeters / 1000;
+                float distanceInKm = distanceInMeters / Constants.METERS_IN_KM;
                 Log.d(TAG, "Calculated distance: " + distanceInKm + " km between updates.");
 
                 if (weightKg > 0) {
-                    if (activity.equals("Walking")) {
-                        distanceWalked += distanceInKm;
-                        caloriesBurned += CalorieCalculator.calculateCaloriesBurned("Walking", weightKg, distanceInKm);
-                        Log.d(TAG, "Updated walking distance: " + distanceWalked + " km, Total calories burned: " + caloriesBurned);
-                    } else if (activity.equals("Running")) {
-                        distanceRun += distanceInKm;
-                        caloriesBurned += CalorieCalculator.calculateCaloriesBurned("Running", weightKg, distanceInKm);
-                        Log.d(TAG, "Updated running distance: " + distanceRun + " km, Total calories burned: " + caloriesBurned);
-                    } else if (activity.equals("Driving")) {
-                        distanceDriven += distanceInKm;
-                        Log.d(TAG, "Updated driving distance: " + distanceDriven + " km");
+                    switch (activity) {
+                        case "Walking":
+                            distanceWalked += distanceInKm;
+                            caloriesBurned += CalorieCalculator.calculateCaloriesBurned("Walking", weightKg, distanceInKm);
+                            Log.d(TAG, "Updated walking distance: " + distanceWalked + " km, Total calories burned: " + caloriesBurned);
+                            break;
+                        case "Running":
+                            distanceRun += distanceInKm;
+                            caloriesBurned += CalorieCalculator.calculateCaloriesBurned("Running", weightKg, distanceInKm);
+                            Log.d(TAG, "Updated running distance: " + distanceRun + " km, Total calories burned: " + caloriesBurned);
+                            break;
+                        case "Driving":
+                            distanceDriven += distanceInKm;
+                            Log.d(TAG, "Updated driving distance: " + distanceDriven + " km");
+                            break;
                     }
                 }
             }
@@ -122,14 +124,14 @@ public class LocationController extends LocationCallback implements SensorEventL
     }
 
     private String getCurrentDate() {
-        return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        return new SimpleDateFormat(Constants.DATE_FORMAT_PATTERN, Constants.DEFAULT_LOCALE).format(new Date());
     }
 
     private void resetDailyValues() {
         distanceWalked = 0f;
         distanceRun = 0f;
         distanceDriven = 0f;
-        caloriesBurned = 0; // Reset the consolidated calorie count
+        caloriesBurned = 0;
         Log.d(TAG, "Values reset for the new day.");
     }
 
@@ -175,15 +177,9 @@ public class LocationController extends LocationCallback implements SensorEventL
     }
 
     private String calculateCardinalDirection(float azimuth) {
-        if (azimuth >= 337.5 || azimuth < 22.5) return "N";
-        else if (azimuth >= 22.5 && azimuth < 67.5) return "NE";
-        else if (azimuth >= 67.5 && azimuth < 112.5) return "E";
-        else if (azimuth >= 112.5 && azimuth < 157.5) return "SE";
-        else if (azimuth >= 157.5 && azimuth < 202.5) return "S";
-        else if (azimuth >= 202.5 && azimuth < 247.5) return "SW";
-        else if (azimuth >= 247.5 && azimuth < 292.5) return "W";
-        else return "NW";
+        return Constants.getCardinalDirection(azimuth);
     }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}

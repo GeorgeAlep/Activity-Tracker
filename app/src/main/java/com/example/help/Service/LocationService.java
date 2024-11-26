@@ -20,13 +20,13 @@ import androidx.core.app.NotificationCompat;
 import com.example.help.Controller.LocationController;
 import com.example.help.Database.DatabaseHelper;
 import com.example.help.R;
+import com.example.help.utils.Constants;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 public class LocationService extends Service {
 
-    private static final String CHANNEL_ID = "location_channel";
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationController locationController;
     private DatabaseHelper databaseHelper;
@@ -38,8 +38,8 @@ public class LocationService extends Service {
 
         // Initialize the database helper and retrieve user weight from shared preferences
         databaseHelper = new DatabaseHelper(this);
-        SharedPreferences preferences = getSharedPreferences("user_settings", Context.MODE_PRIVATE);
-        userWeight = preferences.getFloat("user_weight", 70.0f); // Default to 70kg if not set
+        SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
+        userWeight = preferences.getFloat(Constants.KEY_WEIGHT, Constants.DEFAULT_WEIGHT);
 
         // Initialize SensorManager
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -51,21 +51,23 @@ public class LocationService extends Service {
 
         // Create a notification for the foreground service
         createNotificationChannel();
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+        Notification notification = new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
                 .setContentTitle("Tracking your location")
                 .setContentText("App is running in the background")
                 .setSmallIcon(R.drawable.ic_location)
                 .build();
 
+        // Start service in the foreground to keep it active even when app is in the background
         startForeground(1, notification);
         startLocationUpdates();
     }
 
+    // Create a notification channel for API level 26 and above
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Location Tracking",
+                    Constants.CHANNEL_ID,
+                    Constants.CHANNEL_NAME,
                     NotificationManager.IMPORTANCE_LOW
             );
             NotificationManager manager = getSystemService(NotificationManager.class);
@@ -75,26 +77,31 @@ public class LocationService extends Service {
         }
     }
 
+    // Start requesting location updates
     private void startLocationUpdates() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setInterval(5000); // Set to 5 seconds for testing purposes
-        locationRequest.setFastestInterval(2000); // Fastest update interval
+        locationRequest.setInterval(Constants.LOCATION_UPDATE_INTERVAL); // Use constant for interval
+        locationRequest.setFastestInterval(Constants.LOCATION_FASTEST_UPDATE_INTERVAL); // Use constant for fastest interval
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
+        // Check for location permissions before requesting updates
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationController, null);
         } else {
-            stopSelf(); // Stop the service if permission is not granted
+            // Stop the service if location permission is not granted
+            stopSelf();
         }
     }
 
+    // Service does not provide binding, so return null
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null; // No binding needed for this service
+        return null;
     }
 
+    // Clean up location updates when the service is destroyed
     @Override
     public void onDestroy() {
         super.onDestroy();
