@@ -67,7 +67,6 @@ public class LocationController extends LocationCallback implements SensorEventL
     @Override
     public void onLocationResult(LocationResult locationResult) {
         if (locationResult == null) {
-            Log.d(TAG, "LocationResult is null");
             return;
         }
 
@@ -75,34 +74,28 @@ public class LocationController extends LocationCallback implements SensorEventL
         if (!currentDate.equals(lastSavedDate)) {
             resetDailyValues();
             lastSavedDate = currentDate;
-            Log.d(TAG, "Date changed, resetting daily values.");
         }
 
         for (Location location : locationResult.getLocations()) {
             float speed = location.getSpeed();
             String activity = activityClassifier.classifyActivity(speed * Constants.MS_TO_KMH_CONVERSION);  // Convert speed to km/h
-            Log.d(TAG, "Received location update. Speed: " + speed + " m/s, Activity: " + activity);
 
             if (lastLocation != null) {
                 float distanceInMeters = location.distanceTo(lastLocation);
                 float distanceInKm = distanceInMeters / Constants.METERS_IN_KM;
-                Log.d(TAG, "Calculated distance: " + distanceInKm + " km between updates.");
 
                 if (weightKg > 0) {
                     switch (activity) {
                         case "Walking":
                             distanceWalked += distanceInKm;
                             caloriesBurned += CalorieCalculator.calculateCaloriesBurned("Walking", weightKg, distanceInKm);
-                            Log.d(TAG, "Updated walking distance: " + distanceWalked + " km, Total calories burned: " + caloriesBurned);
                             break;
                         case "Running":
                             distanceRun += distanceInKm;
                             caloriesBurned += CalorieCalculator.calculateCaloriesBurned("Running", weightKg, distanceInKm);
-                            Log.d(TAG, "Updated running distance: " + distanceRun + " km, Total calories burned: " + caloriesBurned);
                             break;
                         case "Driving":
                             distanceDriven += distanceInKm;
-                            Log.d(TAG, "Updated driving distance: " + distanceDriven + " km");
                             break;
                     }
                 }
@@ -114,25 +107,21 @@ public class LocationController extends LocationCallback implements SensorEventL
                 listener.onActivityDataUpdated(activity, distanceWalked, distanceRun, distanceDriven, caloriesBurned);
                 GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                 listener.onLocationUpdated(geoPoint);
-                Log.d(TAG, "Activity data and location updated to listener.");
-            } else {
-                Log.e(TAG, "LocationControllerListener is null");
             }
 
             saveData();
         }
     }
 
-    private String getCurrentDate() {
+    String getCurrentDate() {
         return new SimpleDateFormat(Constants.DATE_FORMAT_PATTERN, Constants.DEFAULT_LOCALE).format(new Date());
     }
 
-    private void resetDailyValues() {
+    void resetDailyValues() {
         distanceWalked = 0f;
         distanceRun = 0f;
         distanceDriven = 0f;
         caloriesBurned = 0;
-        Log.d(TAG, "Values reset for the new day.");
     }
 
     private void saveData() {
@@ -144,6 +133,26 @@ public class LocationController extends LocationCallback implements SensorEventL
         }
     }
 
+    public float getDistanceWalked() {
+        return distanceWalked;
+    }
+
+    public float getDistanceRun() {
+        return distanceRun;
+    }
+
+    public float getDistanceDriven() {
+        return distanceDriven;
+    }
+
+    public double getCaloriesBurned() {
+        return caloriesBurned;
+    }
+
+    public double getWeightKg() {
+        return weightKg;
+    }
+
     private void loadSavedData() {
         String currentDate = getCurrentDate();
         ActivityData savedData = databaseHelper.getActivityDataForDate(currentDate);
@@ -152,9 +161,6 @@ public class LocationController extends LocationCallback implements SensorEventL
             distanceRun = savedData.getDistanceRun();
             distanceDriven = savedData.getDistanceDriven();
             caloriesBurned = savedData.getCaloriesBurned();
-            Log.d(TAG, "Loaded saved data for today: Walked = " + distanceWalked + " km, Run = " + distanceRun + " km, Driven = " + distanceDriven + " km, Total Calories = " + caloriesBurned);
-        } else {
-            Log.d(TAG, "No saved data for today.");
         }
     }
 

@@ -34,12 +34,22 @@ android {
     buildFeatures {
         compose true
     }
+
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
 }
 
 dependencies {
     implementation libs.glide
     testImplementation libs.junit.jupiter
     annotationProcessor libs.compiler
+    testImplementation libs.junit.jupiter.v5100
+    testImplementation libs.mockito.core
+    testImplementation libs.robolectric
+    testImplementation libs.androidx.core
     implementation libs.osmdroid.android
     implementation libs.androidx.appcompat.v161
     implementation libs.material

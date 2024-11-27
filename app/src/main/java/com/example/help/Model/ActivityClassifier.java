@@ -9,7 +9,6 @@ public class ActivityClassifier {
 
     // Method to classify activity based on speed (in km/h)
     public String classifyActivity(float speed) {
-        Log.d(TAG, "Speed (km/h): " + speed);
 
         if (speed < Constants.SPEED_IDLE_THRESHOLD) {
             return "Idle";
