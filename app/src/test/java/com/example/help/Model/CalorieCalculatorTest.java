@@ -18,7 +18,7 @@ class CalorieCalculatorTest {
         double expectedCaloriesBurned = WALKING_CALORIE_BURN_RATE * weightKg * distanceKm;
 
         // Perform calculation
-        double actualCaloriesBurned = CalorieCalculator.calculateCaloriesBurned("Walking", weightKg, distanceKm);
+        double actualCaloriesBurned = CalorieCalculator.calculateCaloriesBurnedWalking();
 
         // Assert the result
         Assertions.assertEquals(expectedCaloriesBurned, actualCaloriesBurned, 0.01, "Calories burned for walking did not match expected value");
@@ -34,21 +34,9 @@ class CalorieCalculatorTest {
         double expectedCaloriesBurned = RUNNING_CALORIE_BURN_RATE * weightKg * distanceKm;
 
         // Perform calculation
-        double actualCaloriesBurned = CalorieCalculator.calculateCaloriesBurned("Running", weightKg, distanceKm);
+        double actualCaloriesBurned = CalorieCalculator.calculateCaloriesBurnedRunning();
 
         // Assert the result
         Assertions.assertEquals(expectedCaloriesBurned, actualCaloriesBurned, 0.01, "Calories burned for running did not match expected value");
-    }
-
-    @Test
-    void testCalculateCaloriesBurnedInvalidActivity() {
-        final double weightKg = 70.0; // Example weight in kg
-        final double distanceKm = 5.0; // Example distance in km
-
-        // Perform calculation for an invalid activity
-        double actualCaloriesBurned = CalorieCalculator.calculateCaloriesBurned("Swimming", weightKg, distanceKm);
-
-        // Assert the result
-        Assertions.assertEquals(0.0, actualCaloriesBurned, "Calories burned for an invalid activity should be 0");
     }
 }

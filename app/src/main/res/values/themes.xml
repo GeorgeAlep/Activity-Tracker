@@ -8,5 +8,6 @@
         <item name="colorAccent">@color/accent_red</item>
         <item name="android:textColorPrimary">@color/accent_red</item>
         <item name="android:fontFamily">@font/proxima_nova</item>
+
     </style>
 </resources>

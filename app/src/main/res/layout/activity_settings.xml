@@ -3,36 +3,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/history_background">
 
     <EditText
         android:id="@+id/weightEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:hint="Enter weight (kg)"
         android:inputType="numberDecimal"
-        android:hint="Enter weight (kg)" />
+        android:textColor="@color/white"
+        android:layout_marginTop="300dp"
+        android:textAlignment="center"
+        android:textSize="30dp"/>
 
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/white"
+        android:textAlignment="center">
 
         <RadioButton
             android:id="@+id/kmRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Kilometers" />
+            android:text="Kilometers"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/white"
+            android:textSize="25dp" />
 
         <RadioButton
             android:id="@+id/milesRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Miles" />
+            android:text="Miles"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/white"
+            android:textSize="25dp"
+            android:layout_marginLeft="30dp"/>
     </RadioGroup>
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save Settings" />
+        android:layout_height="89dp"
+        android:layout_marginTop="280dp"
+        android:backgroundTint="@color/black"
+        android:text="Save Settings"
+        android:textColor="@color/white" />
 </LinearLayout>

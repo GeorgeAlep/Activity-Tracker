@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -24,27 +25,38 @@ import com.example.help.utils.Constants;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 
+/**
+ * The LocationService class is a foreground service that manages location updates
+ * and sensor data for the app. It ensures that tracking continues even when the
+ * app is in the background.
+ */
 public class LocationService extends Service {
 
+    // Handles location updates using the fused location provider
     private FusedLocationProviderClient fusedLocationProviderClient;
-    private LocationController locationController;
-    private DatabaseHelper databaseHelper;
-    private float userWeight;
 
+    // Singleton instance of LocationController to manage location-related logic
+    private LocationController locationController;
+
+    /**
+     * Called when the service is created.
+     * Initializes location tracking, the LocationController, and the foreground service.
+     */
     @Override
     public void onCreate() {
         super.onCreate();
 
         // Initialize the database helper and retrieve user weight from shared preferences
-        databaseHelper = new DatabaseHelper(this);
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
         SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
-        userWeight = preferences.getFloat(Constants.KEY_WEIGHT, Constants.DEFAULT_WEIGHT);
+        float userWeight = preferences.getFloat(Constants.KEY_WEIGHT, Constants.DEFAULT_WEIGHT);
 
         // Initialize SensorManager
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
-        // Retrieve singleton instance of LocationController with null listener
+        // Retrieve singleton instance of LocationController with a null listener
         locationController = LocationController.getInstance(
                 null, databaseHelper, sensorManager, userWeight
         );
@@ -57,12 +69,17 @@ public class LocationService extends Service {
                 .setSmallIcon(R.drawable.ic_location)
                 .build();
 
-        // Start service in the foreground to keep it active even when app is in the background
+        // Start the service in the foreground
         startForeground(1, notification);
+
+        // Begin location updates
         startLocationUpdates();
     }
 
-    // Create a notification channel for API level 26 and above
+    /**
+     * Creates a notification channel for the foreground service.
+     * Required for API level 26 (Android Oreo) and above.
+     */
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
@@ -77,31 +94,50 @@ public class LocationService extends Service {
         }
     }
 
-    // Start requesting location updates
+    /**
+     * Starts requesting location updates using the fused location provider.
+     * Checks for location permissions and stops the service if permissions are missing.
+     */
     private void startLocationUpdates() {
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setInterval(Constants.LOCATION_UPDATE_INTERVAL); // Use constant for interval
-        locationRequest.setFastestInterval(Constants.LOCATION_FASTEST_UPDATE_INTERVAL); // Use constant for fastest interval
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        // Check for location permissions before requesting updates
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationController, null);
-        } else {
-            // Stop the service if location permission is not granted
-            stopSelf();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.e("LocationService", "Location permission not granted. Stopping service.");
+            stopSelf(); // Stop the service if location permission is not granted
+            return;
         }
+
+        // Initialize the fused location provider
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        // Create the LocationRequest with desired settings
+        LocationRequest locationRequest = new LocationRequest.Builder(
+                Priority.PRIORITY_HIGH_ACCURACY, // High accuracy for location tracking
+                Constants.LOCATION_UPDATE_INTERVAL // Interval between location updates
+        )
+                .setMinUpdateIntervalMillis(Constants.LOCATION_FASTEST_UPDATE_INTERVAL) // Minimum interval for updates
+                .build();
+
+        // Request location updates
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationController, getMainLooper());
     }
 
-    // Service does not provide binding, so return null
+    /**
+     * Called when another component binds to the service.
+     * This service does not provide binding, so null is returned.
+     *
+     * @param intent The intent used to bind to the service.
+     * @return Always returns null as this service is not bound.
+     */
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
-    // Clean up location updates when the service is destroyed
+    /**
+     * Called when the service is destroyed.
+     * Cleans up resources by stopping location updates.
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();

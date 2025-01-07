@@ -45,10 +45,18 @@ android {
 dependencies {
     implementation libs.glide
     testImplementation libs.junit.jupiter
+    testImplementation libs.androidx.junit
     annotationProcessor libs.compiler
     testImplementation libs.junit.jupiter.v5100
     testImplementation libs.mockito.core
-    testImplementation libs.robolectric
+    testImplementation libs.robolectric.v4103
+    testImplementation libs.mockito.core
+    testImplementation libs.mockito.junit.jupiter
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.mockito.android
+    testImplementation libs.junit.jupiter.v5100
+    androidTestImplementation libs.androidx.core
+    androidTestImplementation libs.androidx.espresso.core
     testImplementation libs.androidx.core
     implementation libs.osmdroid.android
     implementation libs.androidx.appcompat.v161

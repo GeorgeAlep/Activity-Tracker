@@ -1,50 +1,83 @@
 package com.example.help.Model;
 
+/**
+ * The ActivityData class represents the data collected for user activities on a specific date.
+ * It includes distances walked, run, and driven, as well as the total calories burned.
+ */
 public class ActivityData {
 
-    private long id;
-    private String date;
-    private float distanceWalked;
-    private float distanceRun;
-    private float distanceDriven;
-    private double caloriesBurned;  // Single variable for total calories burned
+    // Date of the activity data
+    private final String date;
 
-    public ActivityData(long id, String date, float distanceWalked, float distanceRun, float distanceDriven, double caloriesBurned) {
-        this.id = id;
+    // Static variables for distances walked and run (shared across all instances)
+    private static float distanceWalked;
+    private static float distanceRun;
+
+    // Distance driven in kilometers
+    private final float distanceDriven;
+
+    // Total calories burned
+    private final double caloriesBurned;
+
+    /**
+     * Constructor for the ActivityData class.
+     *
+     * @param date           The date of the activity data.
+     * @param distanceWalked The total distance walked in kilometers.
+     * @param distanceRun    The total distance run in kilometers.
+     * @param distanceDriven The total distance driven in kilometers.
+     * @param caloriesBurned The total calories burned.
+     */
+    public ActivityData(String date, float distanceWalked, float distanceRun, float distanceDriven, double caloriesBurned) {
         this.date = date;
-        this.distanceWalked = distanceWalked;
-        this.distanceRun = distanceRun;
+        ActivityData.distanceWalked = distanceWalked;
+        ActivityData.distanceRun = distanceRun;
         this.distanceDriven = distanceDriven;
-        this.caloriesBurned = caloriesBurned;  // Set total calories burned
+        this.caloriesBurned = caloriesBurned;
     }
 
-    // Getters and setters for each field
-
-    public long getId() {
-        return id;
-    }
-
+    /**
+     * Retrieves the date of the activity data.
+     *
+     * @return The date as a String.
+     */
     public String getDate() {
         return date;
     }
 
-    public float getDistanceWalked() {
+    /**
+     * Retrieves the total distance walked.
+     *
+     * @return The distance walked in kilometers.
+     */
+    public static float getDistanceWalked() {
         return distanceWalked;
     }
 
-    public float getDistanceRun() {
+    /**
+     * Retrieves the total distance run.
+     *
+     * @return The distance run in kilometers.
+     */
+    public static float getDistanceRun() {
         return distanceRun;
     }
 
+    /**
+     * Retrieves the total distance driven.
+     *
+     * @return The distance driven in kilometers.
+     */
     public float getDistanceDriven() {
         return distanceDriven;
     }
 
+    /**
+     * Retrieves the total calories burned.
+     *
+     * @return The calories burned as a double.
+     */
     public double getCaloriesBurned() {
         return caloriesBurned;
-    }
-
-    public void setCaloriesBurned(double caloriesBurned) {
-        this.caloriesBurned = caloriesBurned;
     }
 }

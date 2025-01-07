@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class HistoryControllerTest {
 
@@ -45,7 +46,7 @@ public class HistoryControllerTest {
     public void testGetFormattedDate() {
         Calendar testCalendar = Calendar.getInstance();
         testCalendar.set(2024, Calendar.NOVEMBER, 26);
-        String expectedDate = new SimpleDateFormat(Constants.DATE_FORMAT_PATTERN, Constants.DEFAULT_LOCALE).format(testCalendar.getTime());
+        String expectedDate = new SimpleDateFormat(Constants.DATE_FORMAT_PATTERN, Locale.getDefault()).format(testCalendar.getTime());
 
         historyController.setDate(2024, Calendar.NOVEMBER, 26);
         String actualDate = historyController.getFormattedDate();
@@ -81,8 +82,8 @@ public class HistoryControllerTest {
     public void testGetActivityDataForCurrentDate() {
         Calendar testCalendar = Calendar.getInstance();
         testCalendar.set(2024, Calendar.NOVEMBER, 26);
-        String currentDate = new SimpleDateFormat(Constants.DATE_FORMAT_PATTERN, Constants.DEFAULT_LOCALE).format(testCalendar.getTime());
-        ActivityData expectedActivityData = new ActivityData(1, currentDate, 3.0f, 2.0f, 10.0f, 500);
+        String currentDate = new SimpleDateFormat(Constants.DATE_FORMAT_PATTERN, Locale.getDefault()).format(testCalendar.getTime());
+        ActivityData expectedActivityData = new ActivityData(currentDate, 3.0f, 2.0f, 10.0f, 500);
 
         when(mockDatabaseHelper.getActivityDataForDate(currentDate)).thenReturn(expectedActivityData);
 

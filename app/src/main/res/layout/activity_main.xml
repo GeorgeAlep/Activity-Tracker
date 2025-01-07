@@ -8,7 +8,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_toolbar"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:background="@drawable/gradient_background"
         android:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,11 +22,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:letterSpacing="0.05"
             android:text="Your Activity"
             android:textColor="@color/white"
             android:textSize="37sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.05"/>
+            android:textStyle="bold" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/historyButton"
@@ -70,7 +70,7 @@
         android:id="@+id/bottom_box"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/gradient_background_bottom"
+        android:background="@drawable/gradient_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="0.40"
         app:layout_constraintStart_toStartOf="parent"

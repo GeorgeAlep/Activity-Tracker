@@ -13,7 +13,9 @@ lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.3"
 composeBom = "2024.04.01"
 material = "1.12.0"
+mockitoAndroid = "4.5.1"
 mockitoCore = "5.5.0"
+mockitoJunitJupiter = "5.4.0"
 osmdroidAndroid = "6.1.14"
 playServicesLocation = "21.3.0"
 appcompat = "1.7.0"
@@ -23,6 +25,7 @@ junitJupiter = "5.8.1"
 powermockApiMockito2 = "2.x"
 powermockModuleJunit4 = "2.x"
 robolectric = "4.10"
+robolectricVersion = "4.10.3"
 
 [libraries]
 androidx-appcompat-v161 = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
@@ -45,7 +48,9 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 junit-jupiter-v5100 = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiterVersion" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
+mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockitoAndroid" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockitoJunitJupiter" }
 osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -55,6 +60,7 @@ junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.r
 powermock-api-mockito2 = { module = "org.powermock:powermock-api-mockito2", version.ref = "powermockApiMockito2" }
 powermock-module-junit4 = { module = "org.powermock:powermock-module-junit4", version.ref = "powermockModuleJunit4" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+robolectric-v4103 = { module = "org.robolectric:robolectric", version.ref = "robolectricVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
