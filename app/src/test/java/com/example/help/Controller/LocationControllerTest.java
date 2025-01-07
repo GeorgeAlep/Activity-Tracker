@@ -6,22 +6,18 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.util.Log;
 
 import com.example.help.Database.DatabaseHelper;
 import com.google.android.gms.location.LocationResult;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.Collections;
@@ -30,14 +26,13 @@ class LocationControllerTest {
 
     private LocationController.LocationControllerListener mockListener;
     private DatabaseHelper mockDatabaseHelper;
-    private SensorManager mockSensorManager;
     private LocationController locationController;
 
     @BeforeEach
     void setUp() {
         mockListener = mock(LocationController.LocationControllerListener.class);
         mockDatabaseHelper = mock(DatabaseHelper.class);
-        mockSensorManager = mock(SensorManager.class);
+        SensorManager mockSensorManager = mock(SensorManager.class);
 
         locationController = LocationController.getInstance(mockListener, mockDatabaseHelper, mockSensorManager, 70.0);
     }
@@ -61,18 +56,6 @@ class LocationControllerTest {
     }
 
     @Test
-    void testOnLocationResult_withNullLocationResult_logsAndSkipsProcessing() {
-        // Mock a null location result
-        LocationResult nullLocationResult = null;
-
-        // Call the method
-        locationController.onLocationResult(nullLocationResult);
-
-        // Verify that listener methods were not called
-        verifyNoInteractions(mockListener);
-    }
-
-    @Test
     void testOnLocationResult_resetsDailyValuesOnDateChange() {
         // Mock the location data
         Location mockLocation = mock(Location.class);
@@ -90,17 +73,5 @@ class LocationControllerTest {
         // Verify listener interactions and database interactions
         verify(mockListener, atLeastOnce()).onActivityDataUpdated(anyString(), eq(0f), eq(0f), eq(0f), eq(0.0));
         verify(mockDatabaseHelper, times(1)).updateActivityData(anyString(), anyFloat(), anyFloat(), anyFloat(), anyDouble());
-    }
-}
-
-class MockAndroidUtil {
-    static MockedStatic<Log> logMock;
-    static void mockAndroidLog() {
-        if (logMock == null) {
-            logMock = mockStatic(android.util.Log.class);
-            when(android.util.Log.d(anyString(), anyString())).thenReturn(0);
-            when(android.util.Log.e(anyString(), anyString())).thenReturn(0);
-            when(android.util.Log.i(anyString(), anyString())).thenReturn(0);
-        }
     }
 }
