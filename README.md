@@ -6,6 +6,7 @@ How to Use
     Install the App:
         Unpack the ZIP file
         Download and install the APK on your Android device, or build the app using Android Studio.
+        If opened with Android Studio, wait until the gradle build completes.
 
     Start Tracking:
         Launch the app, and it will automatically detect your activities (walking, running, driving) based on GPS data.
@@ -17,6 +18,9 @@ How to Use
 
     Change Settings:
         Go to Settings to update your weight or switch between kilometers and miles for distance measurements.
+
+    Run Tests in Android Studio:
+        Run .\gradlew clean build
 
 **Permissions**
 
