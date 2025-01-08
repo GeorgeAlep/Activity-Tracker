@@ -5,6 +5,11 @@ plugins {
 }
 
 android {
+
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
+
     namespace 'com.example.help'
     compileSdk 34
 
@@ -80,4 +85,8 @@ dependencies {
     androidTestImplementation libs.androidx.ui.test.junit4
     debugImplementation libs.androidx.ui.tooling
     debugImplementation libs.androidx.ui.test.manifest
+}
+
+tasks.withType(Test) {
+    maxParallelForks = 1 // Ensures tests run sequentially
 }

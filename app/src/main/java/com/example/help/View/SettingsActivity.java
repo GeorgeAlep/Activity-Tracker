@@ -37,6 +37,10 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
         // Initialize UI components
         weightEditText = findViewById(R.id.weightEditText);
         kmRadioButton = findViewById(R.id.kmRadioButton);

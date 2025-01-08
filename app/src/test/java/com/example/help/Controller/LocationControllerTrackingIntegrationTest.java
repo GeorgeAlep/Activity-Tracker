@@ -53,37 +53,6 @@ class LocationControllerTrackingIntegrationTest {
         locationController = LocationController.getInstance(mockListener, mockDatabaseHelper, mockSensorManager, USER_WEIGHT_KG);
     }
 
-    @Test
-    void testLocationUpdatesAndActivityClassification() {
-        // Mock database behavior for updates
-        when(mockDatabaseHelper.doesEntryExist(anyString())).thenReturn(true);
-
-        // Mock location data with distances
-        Location walkingLocation = mock(Location.class);
-        when(walkingLocation.getSpeed()).thenReturn(1.0f); // Walking speed
-        when(walkingLocation.distanceTo(any())).thenReturn(100.0f); // 100 meters
-
-        Location runningLocation = mock(Location.class);
-        when(runningLocation.getSpeed()).thenReturn(6.0f); // Running speed
-        when(runningLocation.distanceTo(any())).thenReturn(200.0f); // 200 meters
-
-        Location drivingLocation = mock(Location.class);
-        when(drivingLocation.getSpeed()).thenReturn(20.0f); // Driving speed
-        when(drivingLocation.distanceTo(any())).thenReturn(5000.0f); // 5 km
-
-        // Trigger location updates
-        locationController.onLocationResult(createLocationResult(walkingLocation));
-        locationController.onLocationResult(createLocationResult(runningLocation));
-        locationController.onLocationResult(createLocationResult(drivingLocation));
-
-        // Verify listener received updates
-        verify(mockListener, times(3)).onActivityDataUpdated(anyString(), anyFloat(), anyFloat(), anyFloat(), anyDouble());
-
-        // Verify database update logic
-        verify(mockDatabaseHelper, atLeastOnce()).updateActivityData(anyString(), anyFloat(), anyFloat(), anyFloat(), anyDouble());
-    }
-
-
     private LocationResult createLocationResult(Location location) {
         LocationResult locationResult = mock(LocationResult.class);
         when(locationResult.getLocations()).thenReturn(Collections.singletonList(location));

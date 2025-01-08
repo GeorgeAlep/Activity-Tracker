@@ -40,6 +40,10 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
         // Initialize UI components
         historyListView = findViewById(R.id.historyListView);
         Button datePickerButton = findViewById(R.id.datePickerButton);

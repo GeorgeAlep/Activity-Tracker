@@ -83,6 +83,10 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
         // Load a GIF background
         ImageView gifBackground = findViewById(R.id.gifBackground);
         Glide.with(this).asGif().load(R.drawable.loading_circle).into(gifBackground);

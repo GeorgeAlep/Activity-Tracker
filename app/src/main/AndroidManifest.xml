@@ -8,14 +8,14 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
-
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label=""
+        android:label="Activity Tracker"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
@@ -23,7 +23,8 @@
         <activity
             android:name=".View.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Help">
+            android:theme="@style/Theme.Help"
+            android:label="">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
