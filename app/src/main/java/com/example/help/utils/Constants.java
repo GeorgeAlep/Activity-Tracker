@@ -13,7 +13,7 @@ public final class Constants {
     private Constants() {}
 
     // Activity speed thresholds (in km/h) for classifying user activities
-    public static final float SPEED_IDLE_THRESHOLD = 0f;        // Speed below this is considered "Idle"
+    public static final float SPEED_IDLE_THRESHOLD = 4f;        // Speed below this is considered "Idle"
     public static final float SPEED_WALKING_THRESHOLD = 10f;    // Speed between idle and this is "Walking"
     public static final float SPEED_RUNNING_THRESHOLD = 20f;    // Speed between walking and this is "Running"
 
