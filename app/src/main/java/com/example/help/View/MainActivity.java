@@ -257,6 +257,12 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
                     iconResId = R.drawable.ic_drive;
                     distanceTextView.setText(String.format(Locale.getDefault(), "%.2f", displayedDistanceDriven));
                     break;
+                case "Idle":
+                    iconResId = R.drawable.ic_stand;
+                    distanceTextView.setText("");
+                    unitTextView.setText("");
+                    animateIdleState(true); // Animate text for "Idle"
+                    break;
                 default:
                     iconResId = R.drawable.ic_stand;
                     distanceTextView.setText("");
@@ -264,11 +270,43 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
                     break;
             }
 
+            // Reset animation if not Idle
+            if (!activity.equals("Idle")) {
+                animateIdleState(false);
+            }
+
             activityIcon.setImageResource(iconResId);
             caloriesTextView.setText(String.format(Locale.getDefault(), "%.0f kcal", caloriesBurned));
             caloriesTextView.setVisibility(View.VISIBLE);
         });
     }
+
+    private void animateIdleState(boolean isIdle) {
+        if (isIdle) {
+            // Animate text view downwards and increase size
+            ObjectAnimator moveDown = ObjectAnimator.ofFloat(activityTextView, "translationY", 180f);
+            ObjectAnimator moveRight = ObjectAnimator.ofFloat(activityTextView, "translationX", 70f);
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(activityTextView, "scaleX", 1.7f);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(activityTextView, "scaleY", 1.7f);
+
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playTogether(moveDown, moveRight, scaleX, scaleY);
+            animatorSet.setDuration(300);
+            animatorSet.start();
+        } else {
+            // Reset text view to its original position and size
+            ObjectAnimator moveUp = ObjectAnimator.ofFloat(activityTextView, "translationY", 0f);
+            ObjectAnimator moveRight = ObjectAnimator.ofFloat(activityTextView, "translationX", 0f);
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(activityTextView, "scaleX", 1f);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(activityTextView, "scaleY", 1f);
+
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playTogether(moveUp, moveRight, scaleX, scaleY);
+            animatorSet.setDuration(300);
+            animatorSet.start();
+        }
+    }
+
 
     /**
      * Updates the location marker on the map.
@@ -314,7 +352,8 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
 
     @Override
     protected void onPause() {
